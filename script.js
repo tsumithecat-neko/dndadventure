@@ -1,11 +1,11 @@
-// ====== 数据定义 ======
+// ====== 数据定义（与前版本一致，省略部分相同结构） ======
 const races = [
   { name: "人类", bonus: { 力量:1, 敏捷:1, 体质:1, 智力:1, 感知:1, 魅力:1 }, desc: "多才多艺，所有属性+1。" },
-  { name: "矮人", bonus: { 体质:2 }, desc: "坚韧稳重，体质+2，适合战士与牧师。" },
-  { name: "精灵", bonus: { 敏捷:2 }, desc: "优雅灵敏，敏捷+2，适合游侠与盗贼。" },
-  { name: "半身人", bonus: { 敏捷:2 }, desc: "小巧灵动，敏捷+2，适合盗贼或吟游诗人。" },
+  { name: "矮人", bonus: { 体质:2 }, desc: "坚韧稳重，体质+2。" },
+  { name: "精灵", bonus: { 敏捷:2 }, desc: "优雅灵敏，敏捷+2。" },
+  { name: "半身人", bonus: { 敏捷:2 }, desc: "小巧灵动，敏捷+2。" },
   { name: "龙裔", bonus: { 力量:2, 魅力:1 }, desc: "龙之血脉，力量+2，魅力+1。" },
-  { name: "侏儒", bonus: { 智力:2 }, desc: "聪明狡黠，智力+2，适合法师与工匠。" },
+  { name: "侏儒", bonus: { 智力:2 }, desc: "聪明狡黠，智力+2。" },
   { name: "半精灵", bonus: { 魅力:2, 敏捷:1, 智力:1 }, desc: "混血多才，魅力+2，另两项+1。" },
   { name: "半兽人", bonus: { 力量:2, 体质:1 }, desc: "野性与力量并存，力量+2，体质+1。" },
   { name: "泰夫林", bonus: { 智力:1, 魅力:2 }, desc: "恶魔血裔，智力+1，魅力+2。" }
@@ -13,42 +13,35 @@ const races = [
 
 const classes = [
   { name: "野蛮人", main: "力量、体质", desc: "擅长近战狂怒与抗性。" },
-  { name: "吟游诗人", main: "魅力", desc: "用音乐与魔法激励队友，依赖魅力。" },
-  { name: "牧师", main: "感知", desc: "神圣施法者，依赖感知，治疗与守护。" },
-  { name: "德鲁伊", main: "感知", desc: "自然施法与变形，依赖感知。" },
+  { name: "吟游诗人", main: "魅力", desc: "用音乐与魔法激励队友。" },
+  { name: "牧师", main: "感知", desc: "神圣施法者，治疗与守护。" },
+  { name: "德鲁伊", main: "感知", desc: "自然施法与变形。" },
   { name: "战士", main: "力量或敏捷", desc: "多面手，擅长各种战斗风格。" },
-  { name: "武僧", main: "敏捷、感知", desc: "武术家，注重反应与心灵专注。" },
+  { name: "武僧", main: "敏捷、感知", desc: "武术家，注重反应与专注。" },
   { name: "圣骑士", main: "力量、魅力", desc: "正义的战士，具神圣魔法。" },
-  { name: "游侠", main: "敏捷、感知", desc: "荒野猎人，精通弓与自然魔法。" },
+  { name: "游侠", main: "敏捷、感知", desc: "荒野猎人，精通弓与魔法。" },
   { name: "盗贼", main: "敏捷", desc: "潜行与精准打击的专家。" },
   { name: "术士", main: "魅力", desc: "天生魔法力量，依赖魅力。" },
   { name: "契术士", main: "魅力", desc: "与异界存在立契约的施法者。" },
-  { name: "法师", main: "智力", desc: "博学的施法大师，依赖智力。" },
-  { name: "工匠", main: "智力", desc: "发明家与魔导科技专家。" }
+  { name: "法师", main: "智力", desc: "博学的施法大师。" },
+  { name: "工匠", main: "智力", desc: "魔导科技专家。" }
 ];
 
 const backgrounds = [
-  { name: "侍从", desc: "信仰虔诚的教徒，熟悉宗教仪式。" },
-  { name: "骗子", desc: "伪装与欺诈的高手。" },
-  { name: "罪犯", desc: "潜行与阴影的熟人。" },
-  { name: "艺人", desc: "表演艺术家，魅力非凡。" },
-  { name: "民间英雄", desc: "平民的保护者，擅长生存与交涉。" },
-  { name: "行会工匠", desc: "专精手艺与贸易，擅长谈判与制作。" },
-  { name: "隐士", desc: "孤独修行者，探求精神启示。" },
-  { name: "贵族", desc: "出生显赫，擅长礼仪与社交。" },
-  { name: "荒野游侠", desc: "来自荒野，熟悉自然与狩猎。" },
-  { name: "贤者", desc: "知识渊博，擅长调查与研究。" },
-  { name: "水手", desc: "海上生活者，精于航行。" },
   { name: "士兵", desc: "纪律严明，擅长武器与指挥。" },
-  { name: "流浪儿", desc: "街头求生者，擅长潜行与察觉。" }
+  { name: "贵族", desc: "出生显赫，擅长礼仪与社交。" },
+  { name: "学者", desc: "知识渊博，擅长调查与研究。" },
+  { name: "罪犯", desc: "潜行与阴影的熟人。" },
+  { name: "流浪儿", desc: "街头求生者，擅长潜行与察觉。" },
 ];
 
 // ====== 全局变量 ======
 let character = {};
-let inventory = [];
 let selectedButton = null;
+let eventTimer = null;
+let currentEvent = null;
 
-// ====== 属性生成 ======
+// ====== 基础逻辑（生成属性、选择等） ======
 function rollStat() {
   const rolls = Array.from({ length: 4 }, () => Math.floor(Math.random() * 6) + 1);
   rolls.sort((a, b) => b - a);
@@ -68,12 +61,11 @@ function generateStats() {
       魅力: rollStat()
     };
     const btn = document.createElement("button");
-    btn.textContent = `力量:${stats.力量}, 敏捷:${stats.敏捷}, 体质:${stats.体质}, 智力:${stats.智力}, 感知:${stats.感知}, 魅力:${stats.魅力}`;
+    btn.textContent = Object.entries(stats).map(([k,v]) => `${k}:${v}`).join(", ");
     btn.onclick = () => selectStats(stats, btn);
     optionsDiv.appendChild(btn);
   }
 
-  // 重置选择状态显示
   document.getElementById("selected-stats").textContent = "尚未选择属性组。";
   if (selectedButton) {
     selectedButton.classList.remove("selected");
@@ -86,118 +78,125 @@ function selectStats(stats, button) {
   if (selectedButton) selectedButton.classList.remove("selected");
   selectedButton = button;
   selectedButton.classList.add("selected");
-
   document.getElementById("selected-stats").textContent =
     `✅ 当前已选择属性组：${Object.entries(stats).map(([k,v]) => `${k}:${v}`).join(", ")}`;
 }
 
-// ====== 初始化下拉选项 ======
 function initSelectors() {
+  const makeOptions = (select, list) => {
+    select.innerHTML = "";
+    list.forEach(i => {
+      const opt = document.createElement("option");
+      opt.value = i.name;
+      opt.textContent = i.name;
+      select.appendChild(opt);
+    });
+  };
+
+  makeOptions(document.getElementById("race-select"), races);
+  makeOptions(document.getElementById("class-select"), classes);
+  makeOptions(document.getElementById("background-select"), backgrounds);
+
+  document.getElementById("race-select").onchange = () => showDesc("race");
+  document.getElementById("class-select").onchange = () => showDesc("class");
+  document.getElementById("background-select").onchange = () => showDesc("bg");
+
+  showDesc("race"); showDesc("class"); showDesc("bg");
+}
+
+function showDesc(type) {
   const raceSel = document.getElementById("race-select");
-  races.forEach(r => {
-    const opt = document.createElement("option");
-    opt.value = r.name;
-    opt.textContent = r.name;
-    raceSel.appendChild(opt);
-  });
-
   const classSel = document.getElementById("class-select");
-  classes.forEach(c => {
-    const opt = document.createElement("option");
-    opt.value = c.name;
-    opt.textContent = c.name;
-    classSel.appendChild(opt);
-  });
-
   const bgSel = document.getElementById("background-select");
-  backgrounds.forEach(b => {
-    const opt = document.createElement("option");
-    opt.value = b.name;
-    opt.textContent = b.name;
-    bgSel.appendChild(opt);
-  });
-
-  raceSel.onchange = () => showDesc("race", raceSel.value);
-  classSel.onchange = () => showDesc("class", classSel.value);
-  bgSel.onchange = () => showDesc("bg", bgSel.value);
-
-  showDesc("race", raceSel.value);
-  showDesc("class", classSel.value);
-  showDesc("bg", bgSel.value);
-}
-
-// ====== 显示说明 ======
-function showDesc(type, value) {
-  let target, text = "";
   if (type === "race") {
-    const r = races.find(x => x.name === value);
-    target = document.getElementById("race-desc");
-    text = `${r.desc} 加值: ${Object.entries(r.bonus).map(([k,v]) => `${k}+${v}`).join(", ")}`;
+    const r = races.find(x => x.name === raceSel.value);
+    document.getElementById("race-desc").textContent =
+      `${r.desc} 加值: ${Object.entries(r.bonus).map(([k,v]) => `${k}+${v}`).join(", ")}`;
   } else if (type === "class") {
-    const c = classes.find(x => x.name === value);
-    target = document.getElementById("class-desc");
-    text = `主要属性: ${c.main}。${c.desc}`;
+    const c = classes.find(x => x.name === classSel.value);
+    document.getElementById("class-desc").textContent =
+      `主要属性: ${c.main}。${c.desc}`;
   } else if (type === "bg") {
-    const b = backgrounds.find(x => x.name === value);
-    target = document.getElementById("bg-desc");
-    text = b.desc;
+    const b = backgrounds.find(x => x.name === bgSel.value);
+    document.getElementById("bg-desc").textContent = b.desc;
   }
-  target.textContent = text;
 }
 
-// ====== 游戏逻辑 ======
+// ====== 随机事件系统 ======
+const events = [
+  { name: "遇到强盗伏击", dc: 13, related: "敏捷" },
+  { name: "解读古代铭文", dc: 14, related: "智力" },
+  { name: "穿越危险地形", dc: 12, related: "体质" },
+  { name: "说服商人降价", dc: 11, related: "魅力" },
+  { name: "侦测陷阱机关", dc: 15, related: "感知" },
+  { name: "推开沉重巨石门", dc: 16, related: "力量" }
+];
+
 function startGame() {
   if (!character.stats) return alert("请先选择属性组！");
-  character.race = document.getElementById("race-select").value;
-  character.class = document.getElementById("class-select").value;
-  character.background = document.getElementById("background-select").value;
+  const race = document.getElementById("race-select").value;
+  const cls = document.getElementById("class-select").value;
+  const bg = document.getElementById("background-select").value;
+
+  const rdata = races.find(r => r.name === race);
+  Object.entries(rdata.bonus).forEach(([k,v]) => character.stats[k]+=v);
+
+  character.race = race;
+  character.class = cls;
+  character.background = bg;
   character.level = 1;
   character.xp = 0;
 
-  const race = races.find(r => r.name === character.race);
-  for (const key in race.bonus) character.stats[key] += race.bonus[key];
-
-  document.getElementById("char-race").textContent = character.race;
-  document.getElementById("char-class").textContent = character.class;
-  document.getElementById("char-bg").textContent = character.background;
+  document.getElementById("char-race").textContent = race;
+  document.getElementById("char-class").textContent = cls;
+  document.getElementById("char-bg").textContent = bg;
   updateStats();
 
   document.getElementById("character-creation").style.display = "none";
   document.getElementById("game-area").style.display = "block";
 
-  setInterval(idleGain, 3000);
+  log("游戏开始！每20秒触发一个事件。请点击按钮进行骰子检定。");
+  eventTimer = setInterval(triggerEvent, 20000);
 }
 
-function idleGain() {
-  character.xp += 5;
+function triggerEvent() {
+  if (currentEvent) return; // 避免未解决上一个事件
+  currentEvent = events[Math.floor(Math.random() * events.length)];
+  document.getElementById("current-event").textContent =
+    `🌀 事件：${currentEvent.name}（DC ${currentEvent.dc}, 相关属性：${currentEvent.related}）`;
+  document.getElementById("roll-dice").disabled = false;
+}
+
+function playerRoll() {
+  if (!currentEvent) return;
+  const roll = Math.floor(Math.random() * 20) + 1;
+  const mod = Math.floor((character.stats[currentEvent.related] - 10) / 2);
+  const total = roll + mod;
+  log(`你掷出 D20=${roll} (${currentEvent.related}修正 ${mod >= 0 ? "+"+mod : mod}) → 总和 ${total}`);
+
+  if (total >= currentEvent.dc) {
+    const reward = 20 + Math.floor(Math.random() * 10);
+    character.xp += reward;
+    log(`✅ 成功！获得 ${reward} 经验。`);
+  } else {
+    log(`❌ 失败！你未能克服这次挑战。`);
+  }
+  updateXP();
+
+  currentEvent = null;
+  document.getElementById("current-event").textContent = "等待下一个事件……";
+  document.getElementById("roll-dice").disabled = true;
+}
+
+function updateXP() {
   document.getElementById("xp").textContent = character.xp;
-  log(`获得5点经验。`);
-  checkLevelUp();
-}
-
-function checkLevelUp() {
   const needed = character.level * 100;
   if (character.xp >= needed) {
     character.xp -= needed;
     character.level++;
     document.getElementById("level").textContent = character.level;
-    log(`🎉 升级至 ${character.level} 级！`);
-    if ([4,8,12,16,19].includes(character.level)) increaseStatChoice();
+    log(`🎉 升级到 ${character.level} 级！`);
   }
-}
-
-function increaseStatChoice() {
-  const statKeys = Object.keys(character.stats);
-  const choice = prompt("升级奖励！输入要提升的属性名（每次+2，或两项各+1，用逗号分隔）");
-  if (!choice) return;
-  const selected = choice.split(",");
-  if (selected.length === 1 && statKeys.includes(selected[0])) {
-    character.stats[selected[0]] += 2;
-  } else if (selected.length === 2 && statKeys.includes(selected[0]) && statKeys.includes(selected[1])) {
-    character.stats[selected[0]]++;
-    character.stats[selected[1]]++;
-  }
-  updateStats();
 }
 
 function updateStats() {
@@ -211,7 +210,9 @@ function log(msg) {
   div.scrollTop = div.scrollHeight;
 }
 
+// ====== 初始化 ======
 document.getElementById("generate").onclick = generateStats;
 document.getElementById("start").onclick = startGame;
+document.getElementById("roll-dice").onclick = playerRoll;
 
 initSelectors();
