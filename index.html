@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D&D 放置游戏</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="container">
+    <div id="left-panel">
+      <h1>D&D 放置游戏</h1>
+
+      <div id="character-creation">
+        <button id="generate">🎲 生成属性</button>
+        <div id="stat-options"></div>
+        <div id="selected-stats" class="selected-stats-box">尚未选择属性组。</div>
+
+        <label>种族：
+          <select id="race-select"></select>
+        </label>
+        <div id="race-desc" class="desc-box"></div>
+
+        <label>职业：
+          <select id="class-select"></select>
+        </label>
+        <div id="class-desc" class="desc-box"></div>
+
+        <label>背景：
+          <select id="background-select"></select>
+        </label>
+        <div id="bg-desc" class="desc-box"></div>
+
+        <button id="start">开始游戏</button>
+      </div>
+
+      <div id="game-area" style="display:none;">
+        <h2>放置操作</h2>
+        <button id="explore">探索</button>
+        <button id="train">训练</button>
+        <div id="log"></div>
+
+        <div id="save-controls">
+          <h3>存档管理</h3>
+          <button id="save-export">导出存档</button>
+          <button id="save-import">导入存档</button>
+          <button id="save-reset" style="color:red;">重新开始</button>
+          <textarea id="save-data" rows="3" placeholder="导出/导入存档数据"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div id="right-panel">
+      <h3>角色信息</h3>
+      <div>种族：<span id="char-race"></span></div>
+      <div>职业：<span id="char-class"></span></div>
+      <div>背景：<span id="char-bg"></span></div>
+      <div>等级：<span id="level">1</span></div>
+      <div>经验：<span id="xp">0</span></div>
+      <div>属性：<span id="stats"></span></div>
+
+      <h3>背包</h3>
+      <ul id="inventory"></ul>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
