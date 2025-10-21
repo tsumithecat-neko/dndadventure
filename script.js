@@ -37,7 +37,7 @@ const SKILL_TO_ABILITY = {
   "游说":"魅力",
 };
 
-// 职业（描述/推荐属性 + 自动获得2项技能熟练）
+// 职业
 const CLASSES = [
   { name:"战士", rec:"力量、体质", desc:"前线多面手。", autoProfs:["运动","察觉"] },
   { name:"盗贼", rec:"敏捷", desc:"潜行与精确。", autoProfs:["隐匿","巧手"] },
@@ -52,7 +52,7 @@ const CLASSES = [
   { name:"武僧", rec:"敏捷、感知", desc:"身法与禅意。", autoProfs:["特技","察觉"] },
 ];
 
-// 背景（描述 + 自动获得1项技能熟练）
+// 背景
 const BACKGROUNDS = [
   { name:"士兵", desc:"历经沙场。", autoProf:"威吓" },
   { name:"学者", desc:"博览群书。", autoProf:"历史" },
@@ -61,7 +61,7 @@ const BACKGROUNDS = [
   { name:"荒野流浪者", desc:"与自然为伴。", autoProf:"求生" },
 ];
 
-// 事件池（D&D 探险叙述，技能、DC、奖励范围）
+// 事件池
 const ITEM_POOL = ["草药","狼皮","古老符文","木板","绳索","破旧短剑","金币袋"];
 const EVENTS = [
   { text:"你在森林深处发现了一条古老的小径，似乎通往某处遗迹。", skill:"察觉", dc:[10,18] },
@@ -74,7 +74,6 @@ const EVENTS = [
   { text:"你与守门士兵交涉，试图说服其放行。", skill:"游说", dc:[10,18] },
 ];
 
-// 经验阈值（简化）
 const XP_THRESH = [0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000, 100000, 120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000];
 const ASI_LEVELS = new Set([4,8,12,16,19]);
 
@@ -113,8 +112,7 @@ function initSelectors(){
     opt.value=r.name; opt.textContent=r.name; opt.title=r.tip;
     raceSel.appendChild(opt);
   });
-  raceSel.onchange = ()=>showDesc("race");
-  showDesc("race");
+  raceSel.addEventListener("change", ()=>{ showDesc("race"); });
 
   const classSel = $("#class-select");
   classSel.innerHTML="";
@@ -124,8 +122,10 @@ function initSelectors(){
     opt.title=`推荐属性：${c.rec}；自动技能：${c.autoProfs.join("、")}`;
     classSel.appendChild(opt);
   });
-  classSel.onchange = ()=>{ showDesc("class"); refreshSkillOptionBySel(); };
-  showDesc("class");
+  classSel.addEventListener("change", ()=>{
+    showDesc("class");
+    refreshSkillOptionBySel();
+  });
 
   const bgSel = $("#background-select");
   bgSel.innerHTML="";
@@ -135,7 +135,13 @@ function initSelectors(){
     opt.title=`自动技能：${b.autoProf}`;
     bgSel.appendChild(opt);
   });
-  bgSel.onchange = ()=>{ showDesc("bg"); refreshSkillOptionBySel(); };
+  bgSel.addEventListener("change", ()=>{
+    showDesc("bg");
+    refreshSkillOptionBySel();
+  });
+
+  showDesc("race");
+  showDesc("class");
   showDesc("bg");
 }
 
@@ -152,6 +158,7 @@ function showDesc(type){
     $("#bg-desc").textContent = `背景：${b.desc}。自动获得技能熟练：${b.autoProf}`;
   }
 }
+
 /*****************
  * 生成与选择属性 *
  *****************/
@@ -195,7 +202,6 @@ const ALL_SKILLS = Object.keys(SKILL_TO_ABILITY);
 function renderSkillOptions(autoSet){
   const area=$("#skill-options");
   area.innerHTML="";
-  // 可选项：所有技能中剔除已自动拥有的
   const available = ALL_SKILLS.filter(s=>!autoSet.has(s));
   available.forEach(s=>{
     const label=document.createElement("label");
@@ -215,7 +221,6 @@ function getPickedSkills(){
 function handleSkillPickLimit(){
   const picked = getPickedSkills();
   if(picked.length > 2){
-    // 取消最后一次选中
     this.checked = false;
     return;
   }
@@ -228,12 +233,10 @@ function updateAutoProfsHint(autoSet){
  * 开始游戏 & 创建 *
  *****************/
 function startGame(){
-  // 检查属性
   const selStr = $("#selected-stats").dataset.value;
   if(!selStr){ alert("请先选择一组属性！"); return; }
   const baseStats = JSON.parse(selStr);
 
-  // 读取选择
   const race = $("#race-select").value;
   const cls  = $("#class-select").value;
   const bg   = $("#background-select").value;
@@ -243,11 +246,13 @@ function startGame(){
 
   // 应用种族加值
   const stats = {...baseStats};
-  Object.entries(raceData.bonus).forEach(([k,v])=>{ stats[k] = (stats[k]||0)+v; });
+  Object.entries(raceData.bonus).forEach(([k,v])=>{
+    stats[k] = (stats[k]||0)+v;
+  });
+  ABILS.forEach(a => { stats[a] = clamp20(stats[a] || 0); });
 
   // 自动熟练（职业2 + 背景1）
   const autoSet = new Set([...clsData.autoProfs, bgData.autoProf]);
-  // 玩家自选 2 项（避免重复）
   const picks = getPickedSkills().filter(s=>!autoSet.has(s)).slice(0,2);
   const proficient = [...autoSet, ...picks];
 
@@ -259,12 +264,10 @@ function startGame(){
     inventory: {},
   };
 
-  // 切换界面
   $("#character-creation").style.display="none";
   $("#game-area").style.display="block";
   updateAllPanels();
 
-  // 开始 20 秒循环（可手动下一事件）
   if(eventTimer) clearInterval(eventTimer);
   eventTimer = setInterval(()=> { if(!currentEvent) triggerEvent(); }, 20000);
 }
@@ -279,9 +282,8 @@ function updateAllPanels(){
   $("#level").textContent = game.level;
   $("#xp").textContent = game.xp;
   $("#gp").textContent = game.gp;
-  $("#stats").textContent = ABILS.map(a=>`${a}${game.stats[a]}`).join("， ");
+  $("#stats").textContent = ABILS.map(a=>`${a}：${game.stats[a]}`).join("， ");
 
-  // 技能清单
   const list=$("#skill-list");
   list.innerHTML="";
   ALL_SKILLS.forEach(sk=>{
@@ -294,7 +296,6 @@ function updateAllPanels(){
     list.appendChild(li);
   });
 
-  // 背包
   const inv=$("#inventory");
   inv.innerHTML="";
   Object.entries(game.inventory).forEach(([item,qty])=>{
@@ -303,7 +304,6 @@ function updateAllPanels(){
     inv.appendChild(li);
   });
 
-  // ASI 面板下拉候选更新
   const selects = ["#asi-plus2","#asi-plus1-a","#asi-plus1-b"].map(sel=>$(sel));
   selects.forEach(sel=>{
     if(!sel) return;
@@ -322,7 +322,8 @@ function updateAllPanels(){
 function triggerEvent(){
   if(currentEvent) return;
   const base = randFrom(EVENTS);
-  const dc = d(9)+9; // 10-18
+  const [lo, hi] = base.dc || [10,18];
+  const dc = Math.floor(Math.random()*(hi-lo+1)) + lo;
   currentEvent = { text: base.text, skill: base.skill, dc };
 
   $("#event-log").textContent = `事件：${currentEvent.text}\n需要检定：${currentEvent.skill}（DC ${currentEvent.dc}）`;
@@ -340,16 +341,15 @@ function rollAndResolve(){
   const total = r + mod;
   const success = total >= currentEvent.dc;
 
-  // 奖励：成功（XP 10-30，GP 5-20，物品 1-2），失败（XP 2-5，GP 1-3）
   let xp=0, gp=0, items=[];
   if(success){
-    xp = d(21)+9;               // 10-30
-    gp = d(16)+4;               // 5-20
-    const itemCount = d(2);     // 1-2
+    xp = d(21)+9;
+    gp = d(16)+4;
+    const itemCount = d(2);
     for(let i=0;i<itemCount;i++) items.push(randFrom(ITEM_POOL));
   }else{
-    xp = d(4)+1;                // 2-5
-    gp = d(3);                  // 1-3
+    xp = d(4)+1;
+    gp = d(3);
   }
 
   game.xp += xp;
@@ -365,7 +365,6 @@ function rollAndResolve(){
   currentEvent=null;
   $("#roll-dice").disabled=true;
 
-  // 升级检查与 ASI
   checkLevelUp();
   updateAllPanels();
 }
@@ -381,35 +380,29 @@ function checkLevelUp(){
     logInline(`🎉 升到 ${game.level} 级！`);
     if(ASI_LEVELS.has(game.level)){
       showASI();
-      break; // 处理完这次ASI后再继续（防止叠触）
+      break;
     }
   }
   if(advanced) updateAllPanels();
 }
-function showASI(){
-  $("#asi-panel").style.display="block";
-}
-function hideASI(){
-  $("#asi-panel").style.display="none";
-}
+function showASI(){ $("#asi-panel").style.display="block"; }
+function hideASI(){ $("#asi-panel").style.display="none"; }
 function applyASIPlus2(){
   const a = $("#asi-plus2").value;
   if(game.stats[a] >= 20){ alert(`${a} 已达上限 20。`); return; }
   game.stats[a] = clamp20(game.stats[a]+2);
-  hideASI(); updateAllPanels();
-  logInline(`ASI：${a} +2。`);
+  hideASI(); updateAllPanels(); logInline(`ASI：${a} +2。`);
+  checkLevelUp();
 }
 function applyASIPlus1(){
   const a = $("#asi-plus1-a").value;
   const b = $("#asi-plus1-b").value;
   if(a===b){ alert("两项必须不同。"); return; }
-  if(game.stats[a] >= 20 && game.stats[b] >= 20){
-    alert("两项都已达上限。"); return;
-  }
+  if(game.stats[a] >= 20 && game.stats[b] >= 20){ alert("两项都已达上限。"); return; }
   if(game.stats[a] < 20) game.stats[a] = clamp20(game.stats[a]+1);
   if(game.stats[b] < 20) game.stats[b] = clamp20(game.stats[b]+1);
-  hideASI(); updateAllPanels();
-  logInline(`ASI：${a} +1，${b} +1。`);
+  hideASI(); updateAllPanels(); logInline(`ASI：${a} +1，${b} +1。`);
+  checkLevelUp();
 }
 
 /*****************
@@ -417,13 +410,24 @@ function applyASIPlus1(){
  *****************/
 function exportSave(){
   if(!game){ alert("当前无存档。"); return; }
-  const data = JSON.stringify(game);
-  $("#save-data").value = data;
+  $("#save-data").value = JSON.stringify(game);
 }
 function importSave(){
   try{
     const data = JSON.parse($("#save-data").value.trim());
-    if(!data || !data.stats){ throw new Error("数据无效"); }
+    if(!data || !data.stats) throw new Error("数据无效");
+
+    data.level = Number.isInteger(data.level)?data.level:1;
+    data.xp = Number.isFinite(data.xp)?data.xp:0;
+    data.gp = Number.isFinite(data.gp)?data.gp:0;
+    data.inventory = (data.inventory && typeof data.inventory==="object")?data.inventory:{};
+    data.proficient = Array.isArray(data.proficient)?data.proficient:[];
+
+    ABILS.forEach(a=>{
+      const v = Number(data.stats[a]);
+      data.stats[a] = clamp20(Number.isFinite(v)?v:10);
+    });
+
     game = data;
     $("#character-creation").style.display="none";
     $("#game-area").style.display="block";
@@ -442,16 +446,19 @@ function resetSave(){
     if(eventTimer) clearInterval(eventTimer);
     eventTimer=null;
     game=null;
-    // 回到创建页
+
     $("#game-area").style.display="none";
     $("#character-creation").style.display="block";
     $("#selected-stats").textContent="尚未选择属性组。";
     $("#selected-stats").dataset.value="";
     $("#event-log").textContent="";
     $("#log").textContent="";
+
     renderStatGroups();
-    // 重置技能选区（根据当前职业/背景自动刷新）
     refreshSkillOptionBySel();
+    showDesc("race");
+    showDesc("class");
+    showDesc("bg");
   }
 }
 
@@ -481,9 +488,6 @@ window.addEventListener("load", ()=>{
   refreshSkillOptionBySel();
 
   $("#generate").onclick = renderStatGroups;
-  $("#class-select").addEventListener("change", refreshSkillOptionBySel);
-  $("#background-select").addEventListener("change", refreshSkillOptionBySel);
-  
   $("#start").onclick = startGame;
   $("#next-event").onclick = ()=> triggerEvent();
   $("#roll-dice").onclick = ()=> rollAndResolve();
@@ -495,6 +499,3 @@ window.addEventListener("load", ()=>{
   $("#save-import").onclick = importSave;
   $("#save-reset").onclick  = resetSave;
 });
-
-
-
