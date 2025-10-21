@@ -120,42 +120,34 @@ function initSelectors(){
   classSel.innerHTML="";
   CLASSES.forEach(c=>{
     const opt=document.createElement("option");
-    opt.value=c.name;
-    opt.textContent=c.name;
-    opt.title=`主要属性：${c.rec}；自动技能：${c.autoProfs.join("、")}`;
+    opt.value=c.name; opt.textContent=c.name;
+    opt.title=`推荐属性：${c.rec}；自动技能：${c.autoProfs.join("、")}`;
     classSel.appendChild(opt);
   });
-  // onchange 修正
-  classSel.onchange = ()=>{
-    showDesc("class");
-    refreshSkillOptionBySel();
-  };
+  classSel.onchange = ()=>{ showDesc("class"); refreshSkillOptionBySel(); };
   showDesc("class");
 
   const bgSel = $("#background-select");
   bgSel.innerHTML="";
   BACKGROUNDS.forEach(b=>{
     const opt=document.createElement("option");
-    opt.value=b.name;
-    opt.textContent=b.name;
+    opt.value=b.name; opt.textContent=b.name;
     opt.title=`自动技能：${b.autoProf}`;
     bgSel.appendChild(opt);
   });
-  bgSel.onchange = ()=>{
-    showDesc("bg");
-    refreshSkillOptionBySel();
-  };
+  bgSel.onchange = ()=>{ showDesc("bg"); refreshSkillOptionBySel(); };
   showDesc("bg");
 }
 
+// 显示描述
 function showDesc(type){
   if(type==="race"){
     const r = RACES.find(x=>x.name===$("#race-select").value);
-    $("#race-desc").textContent = `属性加值：${Object.entries(r.bonus).map(([k,v])=>`${k}+${v}`).join("，")}`;
-  }else if(type==="class"){
+    $("#race-desc").textContent = `属性加值：${Object.entries(r.bonus).map(([k,v])=>k+"+"+v).join("，")}`;
+  } else if(type==="class"){
     const c = CLASSES.find(x=>x.name===$("#class-select").value);
-    $("#class-desc").textContent = `推荐：${c.rec}。说明：${c.desc}。自动获得技能熟练：${c.autoProfs.join("、")}`;
-  }else if(type==="bg"){
+    $("#class-desc").textContent = `推荐属性：${c.rec}。说明：${c.desc}。自动获得技能熟练：${c.autoProfs.join("、")}`;
+  } else if(type==="bg"){
     const b = BACKGROUNDS.find(x=>x.name===$("#background-select").value);
     $("#bg-desc").textContent = `背景：${b.desc}。自动获得技能熟练：${b.autoProf}`;
   }
@@ -503,4 +495,5 @@ window.addEventListener("load", ()=>{
   $("#save-import").onclick = importSave;
   $("#save-reset").onclick  = resetSave;
 });
+
 
