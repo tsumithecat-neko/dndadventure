@@ -481,9 +481,9 @@ window.addEventListener("load", ()=>{
   refreshSkillOptionBySel();
 
   $("#generate").onclick = renderStatGroups;
-  $("#class-select").onchange = ()=> refreshSkillOptionBySel();
-  $("#background-select").onchange = ()=> refreshSkillOptionBySel();
-
+  $("#class-select").addEventListener("change", refreshSkillOptionBySel);
+  $("#background-select").addEventListener("change", refreshSkillOptionBySel);
+  
   $("#start").onclick = startGame;
   $("#next-event").onclick = ()=> triggerEvent();
   $("#roll-dice").onclick = ()=> rollAndResolve();
@@ -495,5 +495,6 @@ window.addEventListener("load", ()=>{
   $("#save-import").onclick = importSave;
   $("#save-reset").onclick  = resetSave;
 });
+
 
 
