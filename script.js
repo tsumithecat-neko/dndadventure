@@ -461,8 +461,7 @@ function rollAndResolve(){
   const r = d(20);
   const total = r + mod;
   const success = total >= currentEvent.dc;
-
-  playSound(success ? "snd-success" : "snd-fail"); // 成功/失败音效
+  setTimeout(() => {}, 1000);
   flashLog(success); // 背景闪烁
 
   // 奖励计算使用 currentEvent.rewards（由 JSON 控制）
@@ -656,3 +655,4 @@ window.addEventListener("load", async ()=>{
   $("#save-import").onclick = importSave;
   $("#save-reset").onclick  = resetSave;
 });
+
