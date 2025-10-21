@@ -1,104 +1,123 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>D&D 放置冒险</title>
-<link rel="stylesheet" href="style.css"/>
+  <meta charset="UTF-8">
+  <title>D&D 放置冒险</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="container">
-    <div id="left-panel">
-      <h1>D&D 放置冒险</h1>
 
-      <!-- 角色创建 -->
-      <div id="character-creation">
-        <button id="generate">🎲 生成属性</button>
-        <div id="stat-options" class="stat-options"></div>
-        <div id="selected-stats" class="selected-stats">尚未选择属性组。</div>
+  <header>
+    <h1>D&D 放置冒险</h1>
+  </header>
 
-        <label>种族：
-          <select id="race-select" title="不同种族会提供属性加值"></select>
-        </label>
-        <div id="race-desc" class="desc-box"></div>
+  <!-- 角色创建区 -->
+  <section id="character-creation">
+    <h2>角色创建</h2>
 
-        <label>职业：
-          <select id="class-select" title="职业带来描述/推荐属性/自动获得2项技能熟练"></select>
-        </label>
-        <div id="class-desc" class="desc-box"></div>
+    <div class="creation-block">
+      <label>种族：</label>
+      <select id="race-select"></select>
+      <div id="race-desc" class="desc"></div>
+    </div>
 
-        <label>背景：
-          <select id="background-select" title="背景会自动获得1项技能熟练"></select>
-        </label>
-        <div id="bg-desc" class="desc-box"></div>
+    <div class="creation-block">
+      <label>职业：</label>
+      <select id="class-select"></select>
+      <div id="class-desc" class="desc"></div>
+    </div>
 
-        <div id="skill-select-area" class="skill-select-area">
-          <p><b>请选择 2 项额外技能熟练（避免与职业/背景自带重复）：</b></p>
-          <div id="skill-options" class="skill-options"></div>
-          <div id="auto-profs" class="auto-profs"></div>
-        </div>
+    <div class="creation-block">
+      <label>背景：</label>
+      <select id="background-select"></select>
+      <div id="bg-desc" class="desc"></div>
+    </div>
 
-        <button id="start" class="primary">开始游戏</button>
+    <hr>
+
+    <div class="creation-block">
+      <h3>属性选择</h3>
+      <button id="generate">重新生成属性</button>
+      <div id="stat-options"></div>
+      <div id="selected-stats">尚未选择属性组。</div>
+    </div>
+
+    <hr>
+
+    <div class="creation-block">
+      <h3>技能熟练选择</h3>
+      <p id="auto-profs"></p>
+      <div id="skill-options"></div>
+    </div>
+
+    <hr>
+    <button id="start" class="primary">开始冒险</button>
+  </section>
+
+  <!-- 游戏主界面 -->
+  <section id="game-area" style="display:none;">
+    <div class="game-panel">
+      <div class="info-block">
+        <h2>角色信息</h2>
+        <p>种族：<span id="char-race"></span></p>
+        <p>职业：<span id="char-class"></span></p>
+        <p>背景：<span id="char-bg"></span></p>
+        <p>等级：<span id="level"></span>（XP：<span id="xp"></span>）</p>
+        <p>金币：<span id="gp"></span></p>
+        <p id="stats"></p>
       </div>
 
-      <!-- 游戏区域 -->
-      <div id="game-area" style="display:none;">
-        <div class="controls">
-          <h2>冒险事件</h2>
-          <button id="next-event">下一事件</button>
-          <button id="roll-dice" disabled>掷 d20</button>
-        </div>
-        <div id="event-log" class="event-log"></div>
-        <div id="log" class="log"></div>
+      <div class="info-block">
+        <h2>技能检定</h2>
+        <ul id="skill-list"></ul>
+      </div>
 
-        <!-- ASI 面板（升级触发） -->
-        <div id="asi-panel" class="asi-panel" style="display:none;">
-          <h3>属性提升（ASI）</h3>
-          <p>请选择：<br/>A) 某一项属性 +2，或<br/>B) 两项不同属性各 +1（任意属性都不能超过 20）。</p>
-          <div class="asi-choices">
-            <div>
-              <label>A 方案（+2 到）：</label>
-              <select id="asi-plus2"></select>
-              <button id="asi-apply-plus2">应用 +2</button>
-            </div>
-            <div>
-              <label>B 方案（+1 到）：</label>
-              <select id="asi-plus1-a"></select>
-              <select id="asi-plus1-b"></select>
-              <button id="asi-apply-plus1">应用 +1/+1</button>
-            </div>
-          </div>
-          <div class="asi-note">完成后本面板将自动隐藏。</div>
-        </div>
-
-        <!-- 存档 -->
-        <div id="save-controls" class="save-controls">
-          <h3>存档管理</h3>
-          <button id="save-export">导出存档</button>
-          <button id="save-import">导入存档</button>
-          <button id="save-reset" class="danger">重新开始</button>
-          <textarea id="save-data" rows="3" placeholder="导出/导入存档数据（请妥善保存）"></textarea>
-        </div>
+      <div class="info-block">
+        <h2>背包</h2>
+        <ul id="inventory"></ul>
       </div>
     </div>
 
-    <div id="right-panel">
-      <h3>角色信息</h3>
-      <div>种族：<span id="char-race"></span></div>
-      <div>职业：<span id="char-class"></span></div>
-      <div>背景：<span id="char-bg"></span></div>
-      <div>等级：<span id="level">1</span></div>
-      <div>经验：<span id="xp">0</span></div>
-      <div>金币 GP：<span id="gp">0</span></div>
-      <div>属性：<span id="stats"></span></div>
-
-      <h3>技能</h3>
-      <ul id="skill-list"></ul>
-
-      <h3>背包</h3>
-      <ul id="inventory"></ul>
+    <div class="event-block">
+      <h2>事件</h2>
+      <div id="event-log">点击“下一事件”或等待 20 秒触发。</div>
+      <div class="event-buttons">
+        <button id="next-event">下一事件</button>
+        <button id="roll-dice" disabled>掷骰！</button>
+      </div>
+      <pre id="log"></pre>
     </div>
-  </div>
+
+    <hr>
+
+    <div class="save-block">
+      <h3>存档</h3>
+      <textarea id="save-data" placeholder="此处显示或粘贴存档数据"></textarea>
+      <div class="save-buttons">
+        <button id="save-export">导出存档</button>
+        <button id="save-import">导入存档</button>
+        <button id="save-reset">重新开始</button>
+      </div>
+    </div>
+
+    <!-- ASI 面板 -->
+    <div id="asi-panel" class="modal" style="display:none;">
+      <h3>属性提升（ASI）</h3>
+      <p>选择 +2 到单一属性：</p>
+      <select id="asi-plus2"></select>
+      <button id="asi-apply-plus2">应用 +2</button>
+
+      <hr>
+      <p>或选择 +1 到两项不同属性：</p>
+      <select id="asi-plus1-a"></select>
+      <select id="asi-plus1-b"></select>
+      <button id="asi-apply-plus1">应用 +1/+1</button>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 D&D 放置冒险 Demo</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
