@@ -1,151 +1,192 @@
-:root{
-  --black:#000;
-  --white:#fff;
-  --gray:#f6f6f6;
-  --border:#000;
-}
-
-*{ box-sizing: border-box; }
-body{
-  background: var(--white);
-  color: var(--black);
-  font-family: "Noto Sans SC", system-ui, -apple-system, Segoe UI, Roboto, "PingFang SC", "Microsoft Yahei", sans-serif;
+body {
+  font-family: "Segoe UI", "Noto Sans SC", sans-serif;
+  background: #1d1d1d;
+  color: #eee;
   margin: 0;
   padding: 0;
+  line-height: 1.5;
 }
 
-#container{
+header, footer {
+  background: #272727;
+  text-align: center;
+  padding: 10px;
+  color: #ffd56b;
+}
+
+h1, h2, h3 {
+  color: #ffd56b;
+  margin: 10px 0;
+}
+
+section {
+  max-width: 960px;
+  margin: 20px auto;
+  background: #222;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 10px #000;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #444;
+  margin: 15px 0;
+}
+
+button {
+  background: #444;
+  color: #fff;
+  border: 1px solid #777;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  margin: 3px;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #666;
+}
+
+button.primary {
+  background: #ffd56b;
+  color: #222;
+  font-weight: bold;
+}
+
+select, textarea {
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+}
+
+.creation-block, .info-block {
+  margin-bottom: 15px;
+}
+
+.desc {
+  color: #aaa;
+  font-size: 0.9em;
+  margin-top: 4px;
+}
+
+#stat-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.stat-card {
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 8px;
+  width: 160px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.stat-card:hover {
+  border-color: #ffd56b;
+}
+
+.stat-card.selected {
+  border-color: #ffd56b;
+  background: #2b2b2b;
+}
+
+#skill-options label {
+  display: inline-block;
+  margin-right: 10px;
+  user-select: none;
+}
+
+#game-area .game-panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#game-area .info-block {
+  flex: 1 1 30%;
+  background: #292929;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+#inventory li, #skill-list li {
+  list-style: none;
+}
+
+.event-block {
+  background: #2a2a2a;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 10px;
+}
+
+#event-log {
+  min-height: 100px;
+  white-space: pre-wrap;
+  background: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.event-buttons {
   display: flex;
   gap: 10px;
-  padding: 14px;
-  min-height: 100vh;
 }
 
-#left-panel, #right-panel{
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px;
-  background: var(--white);
+#log {
+  background: #111;
+  color: #ccc;
+  padding: 10px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  min-height: 80px;
 }
 
-#left-panel{ flex: 2; }
-#right-panel{ flex: 1; background: var(--gray); }
-
-h1{ margin-top: 0; }
-
-button, select, textarea{
-  border: 1px solid var(--black);
-  background: var(--white);
-  color: var(--black);
-  padding: 6px 10px;
+#asi-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #333;
+  border: 2px solid #ffd56b;
   border-radius: 8px;
-  margin: 6px 0;
-  transition: .15s ease;
-}
-button:hover{
-  background: var(--black);
-  color: var(--white);
-}
-button.primary{
-  width: 100%;
-  font-weight: 700;
-}
-button.danger{
-  border-color:#b60000;
-  color:#b60000;
-}
-button.danger:hover{
-  background:#b60000;
-  color:#fff;
+  padding: 20px;
+  z-index: 100;
+  box-shadow: 0 0 15px #000;
 }
 
-.stat-options .stat-card{
-  border:1px solid var(--black);
-  border-radius:10px;
-  padding:10px;
-  margin:8px 0;
-  cursor:pointer;
-}
-.stat-options .stat-card.selected{
-  background: var(--black);
-  color: var(--white);
+.modal button {
+  margin-top: 5px;
 }
 
-.selected-stats{
-  font-size:14px;
-  border:1px dashed var(--black);
-  border-radius:10px;
-  padding:8px;
-  margin:8px 0 12px;
+footer {
+  margin-top: 40px;
+  font-size: 0.8em;
+  color: #aaa;
 }
 
-.desc-box{
-  border:1px dashed var(--black);
-  border-radius:10px;
-  padding:8px;
-  margin:6px 0 12px;
-  font-size:14px;
-  min-height: 40px;
-}
-
-.skill-options label{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:4px 8px;
-  border:1px solid var(--black);
-  border-radius:8px;
-  margin:4px 6px 0 0;
-  cursor:pointer;
-}
-.skill-options input[type="checkbox"]{ cursor:pointer; }
-
-.auto-profs{
-  margin-top:8px;
-  font-size: 13px;
-  color:#333;
-}
-
-.controls{
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-
-.event-log, .log{
-  margin-top:8px;
-  border-top:1px solid var(--black);
-  padding-top:8px;
-  min-height: 64px;
-  white-space: pre-line;
-}
-
-.save-controls{
-  margin-top:16px;
-  border-top:1px solid var(--black);
-  padding-top:10px;
-}
-
-#skill-list, #inventory{ list-style:none; padding:0; margin:0; }
-#skill-list li, #inventory li{
-  border-bottom:1px dashed #999;
-  padding:4px 0;
-}
-
-.asi-panel{
-  margin-top:14px;
-  border:2px solid var(--black);
-  border-radius:12px;
-  padding:10px;
-  background:#fffdf7;
-}
-.asi-choices{
-  display:grid;
-  grid-template-columns: 1fr;
-  gap:8px;
-}
-.asi-note{ font-size:12px; color:#444; }
-
-button:disabled{
-  opacity:.55; cursor:not-allowed;
+/* 事件技能按钮选中样式 */
+#event-log button.selected {
+  background: #ffd56b;
+  color: #222;
+  font-weight: bold;
 }
