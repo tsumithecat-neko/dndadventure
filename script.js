@@ -107,41 +107,47 @@ let eventTimer = null;
  *****************/
 function initSelectors(){
   const raceSel = $("#race-select");
-  raceSel.innerHTML = "";
+  raceSel.innerHTML="";
   RACES.forEach(r=>{
     const opt=document.createElement("option");
-    opt.value=r.name;
-    opt.textContent=r.name;
-    opt.title=r.tip;
+    opt.value=r.name; opt.textContent=r.name; opt.title=r.tip;
     raceSel.appendChild(opt);
   });
-  raceSel.onchange = ()=>showDesc("race");
+  raceSel.onchange = ()=>{
+    showDesc("race");
+    refreshSkillOptionBySel();
+  };
   showDesc("race");
 
   const classSel = $("#class-select");
-  classSel.innerHTML = "";
+  classSel.innerHTML="";
   CLASSES.forEach(c=>{
     const opt=document.createElement("option");
-    opt.value=c.name;
-    opt.textContent=c.name;
+    opt.value=c.name; opt.textContent=c.name;
     opt.title=`主要属性：${c.rec}；自动技能：${c.autoProfs.join("、")}`;
     classSel.appendChild(opt);
   });
-  classSel.onchange = ()=>showDesc("class");
+  classSel.onchange = ()=>{
+    showDesc("class");        // 修复：选择后更新说明
+    refreshSkillOptionBySel(); // 同步更新技能选项
+  };
   showDesc("class");
 
   const bgSel = $("#background-select");
-  bgSel.innerHTML = "";
+  bgSel.innerHTML="";
   BACKGROUNDS.forEach(b=>{
     const opt=document.createElement("option");
-    opt.value=b.name;
-    opt.textContent=b.name;
+    opt.value=b.name; opt.textContent=b.name;
     opt.title=`自动技能：${b.autoProf}`;
     bgSel.appendChild(opt);
   });
-  bgSel.onchange = ()=>showDesc("bg");
+  bgSel.onchange = ()=>{
+    showDesc("bg");
+    refreshSkillOptionBySel();
+  };
   showDesc("bg");
 }
+
 function showDesc(type){
   if(type==="race"){
     const r = RACES.find(x=>x.name===$("#race-select").value);
@@ -154,7 +160,6 @@ function showDesc(type){
     $("#bg-desc").textContent = `背景：${b.desc}。自动获得技能熟练：${b.autoProf}`;
   }
 }
-
 /*****************
  * 生成与选择属性 *
  *****************/
