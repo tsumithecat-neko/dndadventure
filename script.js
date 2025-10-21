@@ -78,6 +78,24 @@ function profBonus(lv){
   return 2;
 }
 
+function playSound(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.currentTime = 0;
+    el.play().catch(()=>{}); // 防止未交互阻止
+  }
+}
+
+function flashLog(success) {
+  const log = document.getElementById("log");
+  log.style.transition = "background-color 0.4s";
+  log.style.backgroundColor = success ? "#265a32" : "#5a2b2b";
+  setTimeout(() => {
+    log.style.backgroundColor = "#111";
+  }, 500);
+}
+
+
 /*****************
  * 全局游戏状态  *
  *****************/
@@ -438,9 +456,14 @@ function rollAndResolve(){
   const pb = game.proficient.includes(sk) ? profBonus(game.level) : 0;
   const mod = base + pb;
 
+  playSound("snd-roll"); // 🎲 掷骰音效
+
   const r = d(20);
   const total = r + mod;
   const success = total >= currentEvent.dc;
+
+  playSound(success ? "snd-success" : "snd-fail"); // 成功/失败音效
+  flashLog(success); // 背景闪烁
 
   // 奖励计算使用 currentEvent.rewards（由 JSON 控制）
   let xp = 0, gp = 0, items = [];
