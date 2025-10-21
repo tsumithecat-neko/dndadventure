@@ -74,7 +74,7 @@ const EVENTS = [
   { text:"你与守门士兵交涉，试图说服其放行。", skill:"游说", dc:[10,18] },
 ];
 
-// 经验阈值（简化：接近 5e 官方曲线）
+// 经验阈值（简化）
 const XP_THRESH = [0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000, 100000, 120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000];
 const ASI_LEVELS = new Set([4,8,12,16,19]);
 
@@ -113,23 +113,22 @@ function initSelectors(){
     opt.value=r.name; opt.textContent=r.name; opt.title=r.tip;
     raceSel.appendChild(opt);
   });
-  raceSel.onchange = ()=>{
-    showDesc("race");
-    refreshSkillOptionBySel();
-  };
+  raceSel.onchange = ()=>showDesc("race");
   showDesc("race");
 
   const classSel = $("#class-select");
   classSel.innerHTML="";
   CLASSES.forEach(c=>{
     const opt=document.createElement("option");
-    opt.value=c.name; opt.textContent=c.name;
+    opt.value=c.name;
+    opt.textContent=c.name;
     opt.title=`主要属性：${c.rec}；自动技能：${c.autoProfs.join("、")}`;
     classSel.appendChild(opt);
   });
+  // onchange 修正
   classSel.onchange = ()=>{
-    showDesc("class");        // 修复：选择后更新说明
-    refreshSkillOptionBySel(); // 同步更新技能选项
+    showDesc("class");
+    refreshSkillOptionBySel();
   };
   showDesc("class");
 
@@ -137,7 +136,8 @@ function initSelectors(){
   bgSel.innerHTML="";
   BACKGROUNDS.forEach(b=>{
     const opt=document.createElement("option");
-    opt.value=b.name; opt.textContent=b.name;
+    opt.value=b.name;
+    opt.textContent=b.name;
     opt.title=`自动技能：${b.autoProf}`;
     bgSel.appendChild(opt);
   });
@@ -503,3 +503,4 @@ window.addEventListener("load", ()=>{
   $("#save-import").onclick = importSave;
   $("#save-reset").onclick  = resetSave;
 });
+
