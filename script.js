@@ -249,11 +249,20 @@ function startGame(){
   Object.entries(raceData.bonus).forEach(([k,v])=>{
     stats[k] = (stats[k]||0)+v;
   });
+  // ⚡ 钳制属性不超过 20
   ABILS.forEach(a => { stats[a] = clamp20(stats[a] || 0); });
 
   // 自动熟练（职业2 + 背景1）
   const autoSet = new Set([...clsData.autoProfs, bgData.autoProf]);
-  const picks = getPickedSkills().filter(s=>!autoSet.has(s)).slice(0,2);
+
+  // 获取玩家自选技能
+  const picked = getPickedSkills().filter(s=>!autoSet.has(s));
+  // ⚡ 强制至少选择 2 项自选技能
+  if(picked.length < 2){
+    alert("请从可选技能中选择 2 项（不可与自动熟练重复）！");
+    return;
+  }
+  const picks = picked.slice(0,2);
   const proficient = [...autoSet, ...picks];
 
   game = {
@@ -264,6 +273,7 @@ function startGame(){
     inventory: {},
   };
 
+  // 切换界面
   $("#character-creation").style.display="none";
   $("#game-area").style.display="block";
   updateAllPanels();
@@ -499,3 +509,4 @@ window.addEventListener("load", ()=>{
   $("#save-import").onclick = importSave;
   $("#save-reset").onclick  = resetSave;
 });
+
