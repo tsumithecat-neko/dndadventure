@@ -497,14 +497,13 @@ function rollAndResolve(){
     xp = randRange(2,5);
     gp = randRange(1,3);
     game.hp = Math.max(0, game.hp - 1);
-    if (game.hp <= 0) {
-      $("#log").textContent += "\n💀 你的 HP 降至 0，昏迷在地。游戏暂停。";
-      clearInterval(eventTimer);
-      $("#roll-dice").disabled = true;
-      return;
-    }
   }
-
+  if (game.hp <= 0) {
+    $("#log").textContent += "\n💀 你的 HP 降至 0，昏迷在地。游戏暂停。";
+    clearInterval(eventTimer);
+    $("#roll-dice").disabled = true;
+    return;
+  }
   // 奖励入账
   game.xp += xp;
   game.gp += gp;
@@ -664,6 +663,66 @@ function refreshSkillOptionBySel(){
 }
 
 /*****************
+ * 治疗功能      *
+ *****************/
+function useHealingPotion() {
+  if (!game) return;
+
+  const itemName = "治疗药水";
+  const count = game.inventory[itemName] || 0;
+
+  if (count <= 0) {
+    logInline("❌ 没有可用的治疗药水。");
+    playSound("snd-fail");
+    return;
+  }
+
+  // 消耗一瓶
+  game.inventory[itemName] = count - 1;
+  if (game.inventory[itemName] <= 0) delete game.inventory[itemName];
+
+  // 恢复 1d4 HP
+  const heal = d(4);
+  const oldHp = game.hp;
+  game.hp = Math.min(game.maxHp, game.hp + heal);
+
+  logInline(`🧪 使用了一瓶治疗药水，恢复 ${heal} HP（${oldHp} → ${game.hp}/${game.maxHp}）。`);
+  playSound("snd-roll"); // 轻柔音效，可换成单独 healing 声音
+
+  updateAllPanels();
+}
+
+/*****************
+ * 短休功能 (消耗 100 GP)
+ *****************/
+function takeShortRest() {
+  if (!game) return;
+
+  const cost = 100;
+  if (game.gp < cost) {
+    logInline("❌ 金币不足，无法进行短休（需要 100 GP）。");
+    playSound("snd-fail");
+    return;
+  }
+
+  // 扣除金币
+  game.gp -= cost;
+
+  // 计算恢复量（1d8 + 体质修正）
+  const heal = d(8) + abilityMod(game.stats["体质"]);
+  const actualHeal = Math.max(1, heal); // 至少恢复 1
+  const oldHp = game.hp;
+  game.hp = Math.min(game.maxHp, game.hp + actualHeal);
+
+  logInline(`🛏️ 你花费了 ${cost} GP 进行短休，恢复 ${actualHeal} HP（${oldHp} → ${game.hp}/${game.maxHp}）。`);
+  playSound("snd-roll"); // 轻柔音效
+
+  updateAllPanels();
+}
+
+
+
+/*****************
  * 页面装载与事件绑定
  *****************/
 window.addEventListener("load", async ()=>{
@@ -677,6 +736,9 @@ window.addEventListener("load", async ()=>{
   $("#start").onclick = startGame;
   $("#next-event").onclick = () => triggerEvent();
   $("#roll-dice").onclick = () => rollAndResolve();
+  $("#use-potion").onclick = useHealingPotion;
+  $("#short-rest").onclick = takeShortRest;
+
 
   $("#asi-apply-plus2").onclick = applyASIPlus2;
   $("#asi-apply-plus1").onclick = applyASIPlus1;
