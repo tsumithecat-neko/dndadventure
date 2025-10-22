@@ -59,15 +59,6 @@ const BACKGROUNDS = [
 // 经验阈值（简化）与 ASI 等级
 const XP_THRESH = [0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000, 100000, 120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000];
 const ASI_LEVELS = new Set([4,8,12,16,19]);
-// 根据职业设置初始 HP（D&D2014规则简化版）
-const CLASS_HITDIE = {
-  "战士": 10, "野蛮人": 12, "圣武士": 10, "游侠": 10,
-  "武僧": 8, "牧师": 8, "德鲁伊": 8, "吟游诗人": 8,
-  "盗贼": 8, "术士": 8, "法师": 6
-};
-const conMod = abilityMod(stats["体质"]);
-const hitDie = CLASS_HITDIE[cls] || 8;
-const maxHp = hitDie + conMod;
 
 
 /***************
@@ -309,6 +300,16 @@ function startGame(){
   const picks = picked.slice(0,2);
   const proficient = [...autoSet, ...picks];
 
+  // 根据职业设置初始 HP（D&D2014规则简化版）
+  const CLASS_HITDIE = {
+    "战士": 10, "野蛮人": 12, "圣武士": 10, "游侠": 10,
+    "武僧": 8, "牧师": 8, "德鲁伊": 8, "吟游诗人": 8,
+    "盗贼": 8, "术士": 8, "法师": 6
+  };
+  const conMod = abilityMod(stats["体质"]);
+  const hitDie = CLASS_HITDIE[cls] || 8;
+  const maxHp = hitDie + conMod;
+  
   // 生成游戏初始对象
   game = {
     race, cls, bg,
