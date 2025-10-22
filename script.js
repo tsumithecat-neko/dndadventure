@@ -692,6 +692,35 @@ function useHealingPotion() {
   updateAllPanels();
 }
 
+/*****************
+ * 短休功能 (消耗 100 GP)
+ *****************/
+function takeShortRest() {
+  if (!game) return;
+
+  const cost = 100;
+  if (game.gp < cost) {
+    logInline("❌ 金币不足，无法进行短休（需要 100 GP）。");
+    playSound("snd-fail");
+    return;
+  }
+
+  // 扣除金币
+  game.gp -= cost;
+
+  // 计算恢复量（1d8 + 体质修正）
+  const heal = d(8) + abilityMod(game.stats["体质"]);
+  const actualHeal = Math.max(1, heal); // 至少恢复 1
+  const oldHp = game.hp;
+  game.hp = Math.min(game.maxHp, game.hp + actualHeal);
+
+  logInline(`🛏️ 你花费了 ${cost} GP 进行短休，恢复 ${actualHeal} HP（${oldHp} → ${game.hp}/${game.maxHp}）。`);
+  playSound("snd-roll"); // 轻柔音效
+
+  updateAllPanels();
+}
+
+
 
 /*****************
  * 页面装载与事件绑定
@@ -708,6 +737,7 @@ window.addEventListener("load", async ()=>{
   $("#next-event").onclick = () => triggerEvent();
   $("#roll-dice").onclick = () => rollAndResolve();
   $("#use-potion").onclick = useHealingPotion;
+  $("#short-rest").onclick = takeShortRest;
 
 
   $("#asi-apply-plus2").onclick = applyASIPlus2;
