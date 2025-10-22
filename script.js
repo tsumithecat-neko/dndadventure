@@ -34,31 +34,32 @@ const SKILL_TO_ABILITY = {
 
 // 职业（描述/推荐属性 + 自动获得2项技能熟练）
 const CLASSES = [
-  { name:"战士", rec:"力量、体质", desc:"前线多面手。", autoProfs:["运动","察觉"] },
-  { name:"盗贼", rec:"敏捷", desc:"潜行与精确。", autoProfs:["隐匿","巧手"] },
-  { name:"法师", rec:"智力", desc:"学识与法术。", autoProfs:["奥秘","历史"] },
-  { name:"牧师", rec:"感知", desc:"神术与守护。", autoProfs:["宗教","医药"] },
-  { name:"游侠", rec:"敏捷、感知", desc:"荒野猎人。", autoProfs:["求生","察觉"] },
-  { name:"圣武士", rec:"力量、魅力", desc:"圣光战士。", autoProfs:["威吓","宗教"] },
-  { name:"术士", rec:"魅力", desc:"天赋魔力。", autoProfs:["欺瞒","游说"] },
-  { name:"野蛮人", rec:"力量", desc:"狂怒与韧性。", autoProfs:["运动","求生"] },
-  { name:"吟游诗人", rec:"魅力", desc:"歌声与魔法。", autoProfs:["表演","游说"] },
-  { name:"德鲁伊", rec:"感知", desc:"自然与变形。", autoProfs:["自然","驯兽"] },
-  { name:"武僧", rec:"敏捷、感知", desc:"身法与禅意。", autoProfs:["特技","察觉"] }
+  { name:"战士", rec:"力量、体质", desc:"前线多面手", autoProfs:["运动","察觉"] },
+  { name:"盗贼", rec:"敏捷", desc:"潜行与精确", autoProfs:["隐匿","巧手"] },
+  { name:"法师", rec:"智力", desc:"学识与法术", autoProfs:["奥秘","历史"] },
+  { name:"牧师", rec:"感知", desc:"神术与守护", autoProfs:["宗教","医药"] },
+  { name:"游侠", rec:"敏捷、感知", desc:"荒野猎人", autoProfs:["求生","察觉"] },
+  { name:"圣武士", rec:"力量、魅力", desc:"圣光战士", autoProfs:["威吓","宗教"] },
+  { name:"术士", rec:"魅力", desc:"天赋魔力", autoProfs:["欺瞒","游说"] },
+  { name:"野蛮人", rec:"力量", desc:"狂怒与韧性", autoProfs:["运动","求生"] },
+  { name:"吟游诗人", rec:"魅力", desc:"歌声与魔法", autoProfs:["表演","游说"] },
+  { name:"德鲁伊", rec:"感知", desc:"自然与变形", autoProfs:["自然","驯兽"] },
+  { name:"武僧", rec:"敏捷、感知", desc:"身法与禅意", autoProfs:["特技","察觉"] }
 ];
 
 // 背景（描述 + 自动获得1项技能熟练）
 const BACKGROUNDS = [
-  { name:"士兵", desc:"历经沙场。", autoProf:"威吓" },
-  { name:"学者", desc:"博览群书。", autoProf:"历史" },
-  { name:"罪犯", desc:"暗影行走。", autoProf:"欺瞒" },
-  { name:"贵族", desc:"出身显赫。", autoProf:"游说" },
-  { name:"荒野流浪者", desc:"与自然为伴。", autoProf:"求生" }
+  { name:"士兵", desc:"历经沙场", autoProf:"威吓" },
+  { name:"学者", desc:"博览群书", autoProf:"历史" },
+  { name:"罪犯", desc:"暗影行走", autoProf:"欺瞒" },
+  { name:"贵族", desc:"出身显赫", autoProf:"游说" },
+  { name:"荒野流浪者", desc:"与自然为伴", autoProf:"求生" }
 ];
 
 // 经验阈值（简化）与 ASI 等级
 const XP_THRESH = [0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000, 100000, 120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000];
 const ASI_LEVELS = new Set([4,8,12,16,19]);
+
 
 /***************
  * 小工具函数 *
@@ -299,14 +300,26 @@ function startGame(){
   const picks = picked.slice(0,2);
   const proficient = [...autoSet, ...picks];
 
+  // 根据职业设置初始 HP（D&D2014规则简化版）
+  const CLASS_HITDIE = {
+    "战士": 10, "野蛮人": 12, "圣武士": 10, "游侠": 10,
+    "武僧": 8, "牧师": 8, "德鲁伊": 8, "吟游诗人": 8,
+    "盗贼": 8, "术士": 8, "法师": 6
+  };
+  const conMod = abilityMod(stats["体质"]);
+  const hitDie = CLASS_HITDIE[cls] || 8;
+  const maxHp = hitDie + conMod;
+
   // 生成游戏初始对象
   game = {
     race, cls, bg,
     stats,
     proficient,
     level: 1, xp: 0, gp: 0,
+    hp: maxHp, maxHp,
     inventory: {},
   };
+
 
   // UI 切换到主界面
   $("#character-creation").style.display = "none";
@@ -331,6 +344,7 @@ function updateAllPanels(){
   $("#xp").textContent = game.xp;
   $("#gp").textContent = game.gp;
   $("#stats").textContent = ABILS.map(a=>`${a}：${game.stats[a]}`).join("， ");
+  $("#hp").textContent = `${game.hp}/${game.maxHp}`;
 
   // 技能清单（显示熟练加值）
   const list = $("#skill-list");
@@ -482,6 +496,13 @@ function rollAndResolve(){
     // 失败的固定奖励（可改为配置）
     xp = randRange(2,5);
     gp = randRange(1,3);
+    game.hp = Math.max(0, game.hp - 1);
+    if (game.hp <= 0) {
+      $("#log").textContent += "\n💀 你的 HP 降至 0，昏迷在地。游戏暂停。";
+      clearInterval(eventTimer);
+      $("#roll-dice").disabled = true;
+      return;
+    }
   }
 
   // 奖励入账
@@ -513,6 +534,15 @@ function checkLevelUp(){
   let advanced = false;
   while(game.level < 20 && game.xp >= XP_THRESH[game.level]){
     game.level++;
+
+    const conMod = abilityMod(game.stats["体质"]);
+    const CLASS_HITDIE = { "战士":10,"野蛮人":12,"圣武士":10,"游侠":10,"武僧":8,"牧师":8,"德鲁伊":8,"吟游诗人":8,"盗贼":8,"术士":8,"法师":6 };
+    const hitDie = CLASS_HITDIE[game.cls] || 8;
+    const hpGain = Math.max(1, Math.floor(hitDie / 2) + 1 + conMod);
+    game.maxHp += hpGain;
+    game.hp += hpGain;
+    logInline(`❤️ HP 上升 ${hpGain} 点（当前 ${game.hp}/${game.maxHp}）。`);
+
     advanced = true;
     logInline(`🎉 升到 ${game.level} 级！`);
     if(ASI_LEVELS.has(game.level)){
