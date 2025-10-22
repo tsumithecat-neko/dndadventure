@@ -497,14 +497,13 @@ function rollAndResolve(){
     xp = randRange(2,5);
     gp = randRange(1,3);
     game.hp = Math.max(0, game.hp - 1);
-    if (game.hp <= 0) {
-      $("#log").textContent += "\n💀 你的 HP 降至 0，昏迷在地。游戏暂停。";
-      clearInterval(eventTimer);
-      $("#roll-dice").disabled = true;
-      return;
-    }
   }
-
+  if (game.hp <= 0) {
+    $("#log").textContent += "\n💀 你的 HP 降至 0，昏迷在地。游戏暂停。";
+    clearInterval(eventTimer);
+    $("#roll-dice").disabled = true;
+    return;
+  }
   // 奖励入账
   game.xp += xp;
   game.gp += gp;
