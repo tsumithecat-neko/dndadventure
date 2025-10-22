@@ -664,6 +664,37 @@ function refreshSkillOptionBySel(){
 }
 
 /*****************
+ * 治疗功能      *
+ *****************/
+function useHealingPotion() {
+  if (!game) return;
+
+  const itemName = "治疗药水";
+  const count = game.inventory[itemName] || 0;
+
+  if (count <= 0) {
+    logInline("❌ 没有可用的治疗药水。");
+    playSound("snd-fail");
+    return;
+  }
+
+  // 消耗一瓶
+  game.inventory[itemName] = count - 1;
+  if (game.inventory[itemName] <= 0) delete game.inventory[itemName];
+
+  // 恢复 1d4 HP
+  const heal = d(4);
+  const oldHp = game.hp;
+  game.hp = Math.min(game.maxHp, game.hp + heal);
+
+  logInline(`🧪 使用了一瓶治疗药水，恢复 ${heal} HP（${oldHp} → ${game.hp}/${game.maxHp}）。`);
+  playSound("snd-roll"); // 轻柔音效，可换成单独 healing 声音
+
+  updateAllPanels();
+}
+
+
+/*****************
  * 页面装载与事件绑定
  *****************/
 window.addEventListener("load", async ()=>{
@@ -677,6 +708,8 @@ window.addEventListener("load", async ()=>{
   $("#start").onclick = startGame;
   $("#next-event").onclick = () => triggerEvent();
   $("#roll-dice").onclick = () => rollAndResolve();
+  $("#use-potion").onclick = useHealingPotion;
+
 
   $("#asi-apply-plus2").onclick = applyASIPlus2;
   $("#asi-apply-plus1").onclick = applyASIPlus1;
