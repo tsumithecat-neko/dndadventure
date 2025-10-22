@@ -190,3 +190,29 @@ footer {
   color: #222;
   font-weight: bold;
 }
+
+/* === 动画与效果 === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#event-log {
+  animation: fadeIn 0.4s ease;
+}
+
+#event-log button {
+  animation: fadeIn 0.3s ease;
+}
+
+#log {
+  transition: background-color 0.4s, color 0.3s;
+}
+
+#log.flash-success {
+  background-color: #1e4d2b;
+}
+
+#log.flash-fail {
+  background-color: #4d1e1e;
+}
